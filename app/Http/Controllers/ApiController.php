@@ -10,10 +10,10 @@ class ApiController extends Controller
 {
     function getApiInformation(): array
     {
-       return [
-           'version' => '0.1',
-           'author' => 'Yohann BIGLIA'
-       ];
+        return [
+            'version' => '0.1',
+            'author' => 'Yohann BIGLIA'
+        ];
     }
 
     /**
@@ -23,11 +23,17 @@ class ApiController extends Controller
      * @param int $statusCode
      * @return mixed
      */
-    protected function apiResponse( $message, $data = null, $statusCode = 200) {
+    protected function apiResponse($message, $data = null, $statusCode = 200)
+    {
         if ($data) {
-            return response(['data' => $data, 'message'=>  $message], $statusCode);
+            return response(['data' => $data, 'message' => $message], $statusCode);
         }
-        return response(['message'=> $message], $statusCode);
+        return response(['message' => $message], $statusCode);
+    }
+
+    protected function fallbackResponseFor404()
+    {
+        return $this->errorApiReponse('No url are matching', 404);
     }
 
     /**
@@ -36,7 +42,8 @@ class ApiController extends Controller
      * @param $statusCode
      * @return Application|ResponseFactory|Response
      */
-    protected function errorApiReponse($error, $statusCode) {
-            return response(['error' => $error], $statusCode);
+    protected function errorApiReponse($error, $statusCode)
+    {
+        return response(['error' => $error], $statusCode);
     }
 }

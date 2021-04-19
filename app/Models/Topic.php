@@ -19,7 +19,8 @@ class Topic extends Model
         'body',
     ];
 
-    public function author(){
+    public function author()
+    {
         return $this->belongsTo(User::class);
     }
 }

@@ -10,19 +10,21 @@ use Illuminate\Support\Facades\Validator;
 
 class AuthController extends Controller
 {
-    function login (Request $request) {
+    function login(Request $request)
+    {
         $loginData = $request->validate([
             'email' => 'email|required',
             'password' => 'required'
         ]);
         if (!auth()->attempt($loginData)) {
-            return response(['error'=> 'Mail ou mot de passe incorrect']);
+            return response(['error' => 'Mail ou mot de passe incorrect']);
         }
         return auth()->user()->createToken('AuthToken');
     }
 
 
-    function register (Request $request) {
+    function register(Request $request)
+    {
         $validator = Validator::make($request->all(), [
             'name' => 'required',
             'email' => 'required|email:rfc',
@@ -36,13 +38,11 @@ class AuthController extends Controller
         $fields = $request->request->all();
 
 
-
-        if (User::where('email', $fields['email'])->first()){
+        if (User::where('email', $fields['email'])->first()) {
             return response([
                 'status' => 'error',
                 'error' => 'An user with same email already exist'
             ], 400);
-
         }
 
 

@@ -1,9 +1,9 @@
 <?php
 
 use App\Http\Controllers\ApiController;
+use App\Http\Controllers\Authentification\AuthController;
 use App\Http\Controllers\TopicController;
 use App\Http\Controllers\UserController;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -18,8 +18,8 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::middleware([])->name('auth')->group(function (){
-    Route::post('/login', [\App\Http\Controllers\Authentification\AuthController::class, 'login'] )->name('login');
-    Route::post('/register', [\App\Http\Controllers\Authentification\AuthController::class, 'register'])->name('register');
+    Route::post('/login', [AuthController::class, 'login'] )->name('login');
+    Route::post('/register', [AuthController::class, 'register'])->name('register');
 });
 
 
@@ -29,7 +29,4 @@ Route::apiResource('topics', TopicController::class)->middleware(['auth:api', 'r
 
 Route::get('/', [ApiController::class, 'getApiInformation'])->name('apiinformations');
 
-Route::fallback(function(){
-    return response()->json([
-        'message' => 'No url are matching'], 404);
-});
+Route::fallback([ApiController::class, 'fallbackResponseFor404']);
