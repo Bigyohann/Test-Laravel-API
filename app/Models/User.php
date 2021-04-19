@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Passport\HasApiTokens;
@@ -48,6 +49,10 @@ class User extends Authenticatable
         'roles' => 'array'
     ];
 
+    /**
+     * Relation to retrieve topic from any user
+     * @return HasMany
+     */
     public function topics (){
         return $this->hasMany(Topic::class, 'author_id');
     }

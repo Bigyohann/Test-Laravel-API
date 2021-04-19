@@ -17,6 +17,7 @@ class ApiController extends Controller
     }
 
     /**
+     * Normal Api Reponse formater
      * @param $data
      * @param $message
      * @param int $statusCode
@@ -30,6 +31,7 @@ class ApiController extends Controller
     }
 
     /**
+     * Error Api formater
      * @param $error
      * @param $statusCode
      * @return Application|ResponseFactory|Response

@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Models\Topic;
+use Illuminate\Contracts\Foundation\Application;
+use Illuminate\Contracts\Routing\ResponseFactory;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
@@ -15,7 +17,7 @@ class TopicController extends ApiController
      *
      * @return Topic[]|Collection|Response
      */
-    public function index()
+    public function index(): Response
     {
         return $this->apiResponse('Data retrieved',Topic::all()->load('author'));
     }
@@ -23,16 +25,17 @@ class TopicController extends ApiController
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @return Topic|\Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\Routing\ResponseFactory|Response
+     * @param Request $request
+     * @return Topic|Application|ResponseFactory|Response
      */
-    public function store(Request $request)
+    public function store(Request $request) : Response
     {
         $validator = Validator::make($request->all(), [
             'title' => 'required|string',
             'body' => 'required|string',
         ]);
 
+        // Sending error if validation failed
         if ($validator->fails()) {
             return $this->errorApiReponse($validator->errors()->messages(), 400);
         }
@@ -59,19 +62,27 @@ class TopicController extends ApiController
      * @param  int  $id
      * @return Response
      */
-    public function show($id)
+    public function show($id): Response
     {
-        return $this->apiResponse('Single topic found',Topic::where('id', $id)->first()->load('author'));
+        // Try catch for catch exception if no row is found, before call the load function
+        try {
+            $topic = Topic::where('id', $id)->firstOrFail()->load('author');
+        }
+        catch (\Exception $exception) {
+            return $this->errorApiReponse('No row have been found with this', 404);
+        }
+
+        return $this->apiResponse('Single topic found',$topic);
     }
 
     /**
      * Update the specified resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param Request $request
      * @param  int  $id
      * @return Response
      */
-    public function update(Request $request, $id)
+    public function update(Request $request, $id): Response
     {
         $validator = Validator::make($request->all(), [
             'title' => 'string',
@@ -79,9 +90,11 @@ class TopicController extends ApiController
         ]);
 
 
+        // Sending error if validation failed
         if ($validator->fails()) {
-            return $validator->errors()->messages();
+            return $this->errorApiReponse($validator->errors()->messages(), 400);
         }
+
         $fields = $request->request->all();
 
         $topic = Topic::where('id', $id)->first();
@@ -98,9 +111,11 @@ class TopicController extends ApiController
      * @param  int  $id
      * @return Response
      */
-    public function destroy($id)
+    public function destroy($id) :Response
     {
         $topicToDelete = Topic::where('id', $id)->first();
+
+        // Sending error if row don't exist
         if (!$topicToDelete) {
             return $this->errorApiReponse('No record with this ID have been found', 404);
         }
