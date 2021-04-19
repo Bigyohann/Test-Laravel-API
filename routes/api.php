@@ -1,6 +1,7 @@
 <?php
 
-use App\Http\Controllers\ApiBaseController;
+use App\Http\Controllers\ApiController;
+use App\Http\Controllers\TopicController;
 use App\Http\Controllers\UserController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -24,7 +25,9 @@ Route::middleware([])->name('auth')->group(function (){
 
 Route::apiResource('users', UserController::class)->middleware(['auth:api', 'roles:ADMIN']);
 
-Route::get('/', [ApiBaseController::class, 'getApiInformation'])->name('apiinformations');
+Route::apiResource('topics', TopicController::class)->middleware(['auth:api', 'roles:ADMIN']);
+
+Route::get('/', [ApiController::class, 'getApiInformation'])->name('apiinformations');
 
 Route::fallback(function(){
     return response()->json([

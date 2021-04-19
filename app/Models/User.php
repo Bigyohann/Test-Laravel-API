@@ -25,7 +25,6 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
-        'roles'
     ];
 
     /**
@@ -35,7 +34,8 @@ class User extends Authenticatable
      */
     protected $hidden = [
         'password',
-        'remember_token'
+        'remember_token',
+        'roles'
     ];
 
     /**
@@ -48,5 +48,8 @@ class User extends Authenticatable
         'roles' => 'array'
     ];
 
+    public function topics (){
+        return $this->hasMany(Topic::class, 'author_id');
+    }
 
 }

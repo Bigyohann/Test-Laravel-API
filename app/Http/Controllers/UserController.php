@@ -13,13 +13,12 @@ class UserController extends Controller
 {
 
     /**
+     * Retrieve all user
      */
     public function index()
     {
-        $users = User::all();
+        $users = User::all()->load('topics');
         return response(['users' => UserRessource::collection($users), 'message' => 'Retrieved all users'], 200);
     }
-
-
 
 }
